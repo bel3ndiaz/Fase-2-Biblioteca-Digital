@@ -1,0 +1,72 @@
+/* Hoja de estilos única del sitio */
+:root {
+  --azul: #006dff;
+  --azul-oscuro: #0a1f44;
+  --amarillo: #f5b301;
+  --fondo: #f5f8ff;
+  --verde: #1b7f3b;      --verde-fondo: #e3f6e8;
+  --rojo: #a00000;       --rojo-fondo: #ffe5e5;
+  --naranja: #8a5a00;    --naranja-fondo: #fff1cc;
+}
+
+body { font-family: Arial, Helvetica, sans-serif; background: var(--fondo); color: var(--azul-oscuro); margin: 0; }
+main { max-width: 1050px; margin: 0 auto; padding: 24px; }
+
+/* Encabezado y navegación */
+.encabezado { background: var(--azul-oscuro); color: #fff; display: flex; justify-content: space-between;
+              align-items: center; padding: 14px 24px; border-bottom: 4px solid var(--amarillo); flex-wrap: wrap; gap: 8px; }
+.marca { font-weight: bold; font-size: 1.2em; }
+.marca span { display: block; font-weight: normal; font-size: .7em; opacity: .8; }
+.encabezado nav a { color: #fff; text-decoration: none; margin-left: 18px; font-weight: bold; }
+.encabezado nav a:hover { color: var(--amarillo); }
+
+h1 { border-bottom: 3px solid var(--amarillo); padding-bottom: 6px; }
+a { color: var(--azul); }
+
+/* Tablas */
+table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 20px; }
+th { background: var(--azul); color: #fff; padding: 10px; text-align: left; }
+td { padding: 10px; border-bottom: 1px solid #e5e9f2; }
+table.detalle th { width: 220px; }
+tr.desactualizada td { background: var(--rojo-fondo); }
+tr.por_revisar td { background: var(--naranja-fondo); }
+td.acciones { white-space: nowrap; }
+table:not(.detalle) td:first-child { white-space: nowrap; }
+td.acciones form { display: inline; }
+
+/* Formularios */
+form label { display: block; margin-top: 14px; font-weight: bold; }
+input[type=text], select { display: block; padding: 8px; width: 320px; max-width: 100%; border: 1px solid #b8c4dc; border-radius: 4px; box-sizing: border-box; }
+button, .enlace-boton { display: inline-block; margin-top: 16px; padding: 9px 18px; background: var(--azul); color: #fff;
+                        border: 0; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 1em; }
+button:hover, .enlace-boton:hover { background: #0054c4; }
+.enlace-boton.secundario { background: #6b7a99; }
+td.acciones .enlace-boton, td.acciones button { margin-top: 0; padding: 6px 12px; font-size: .9em; }
+button.peligro { background: var(--rojo); }
+button.peligro:hover { background: #7a0000; }
+.busqueda { display: flex; gap: 8px; align-items: center; margin-bottom: 18px; }
+.busqueda button, .busqueda .enlace-boton { margin-top: 0; }
+.ficha { background: #fff; padding: 10px 14px; border-left: 4px solid var(--azul); }
+
+/* Mensajes */
+.error { color: var(--rojo); font-weight: bold; background: var(--rojo-fondo); border: 1px solid var(--rojo);
+         padding: 10px 10px 10px 30px; border-radius: 6px; }
+.exito { color: var(--verde); font-weight: bold; background: var(--verde-fondo); border: 1px solid var(--verde);
+         padding: 10px 14px; border-radius: 6px; }
+.vacio { font-style: italic; }
+
+/* Etiquetas de estado */
+.etiqueta { padding: 3px 10px; border-radius: 12px; font-size: .85em; font-weight: bold; color: #fff; }
+.etiqueta.vigente { background: var(--verde); }
+.etiqueta.desactualizada { background: var(--rojo); }
+.etiqueta.por_revisar { background: var(--amarillo); color: var(--azul-oscuro); }
+
+/* Resumen: una tarjeta de color distinto por clasificación */
+.tarjetas { display: flex; gap: 18px; flex-wrap: wrap; }
+.tarjeta { flex: 1 1 280px; border-radius: 8px; padding: 14px 18px; border-top: 8px solid; }
+.tarjeta h2 { margin: 0; }
+.tarjeta .numero { font-size: 3em; font-weight: bold; margin: 6px 0; }
+.tarjeta ul { padding-left: 18px; font-size: .9em; color: var(--azul-oscuro); }
+.tarjeta.vigente { background: var(--verde-fondo); border-color: var(--verde); color: var(--verde); }
+.tarjeta.desactualizada { background: var(--rojo-fondo); border-color: var(--rojo); color: var(--rojo); }
+.tarjeta.por_revisar { background: var(--naranja-fondo); border-color: var(--amarillo); color: var(--naranja); }
