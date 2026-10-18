@@ -157,4 +157,101 @@ def nuevo():
     return render_template("nuevo.html", errores=errores, datos=request.form, areas=AREAS)
 
 
+@app.route("/instrucciones/editar/<int:id>", methods=["GET", "POST"])
+def editar(id):
+    conexion = conectar()
+    fila = conexion.execute(
+        "SELECT * FROM instrucciones WHERE id = ?", (id,)).fetchone()
+    if fila is None:
+        conexion.close()
+        abort(404)
 
+    errores = []
+    datos = fila  # valores que se muestran en el formulario
+    if request.method == "POST":
+        version = request.form["version"].strip()
+        version_vigente = request.form["version_vigente"].strip()
+        enlace = request.form["enlace_video"].strip()
+        datos = request.form
+
+        errores = validar_versiones(version, version_vigente) + validar_enlace(enlace)
+
+        if not errores:
+            hoy = date.today().isoformat()
+            conexion.execute(
+                "UPDATE instrucciones SET version = ?, version_vigente = ?, "
+                "enlace_video = ?, fecha_actualizacion = ? WHERE id = ?",
+                (int(version), int(version_vigente), enlace, hoy, id))
+            if int(version) != fila["version"]:
+                conexion.execute(
+                    "INSERT INTO historial_versiones (instruccion_id, version, fecha) "
+                    "VALUES (?, ?, ?)", (id, int(version), hoy))
+            conexion.commit()
+            conexion.close()
+            flash("Instrucción " + fila["codigo"] + " actualizada correctamente (versión "
+                  + version + ") el " + formato_fecha(hoy) + ".")
+            return redirect(url_for("listar"))
+
+    conexion.close()
+    return render_template("editar.html", i=fila, datos=datos, errores=errores)
+
+
+@app.route("/instrucciones/eliminar/<int:id>", methods=["POST"])
+def eliminar(id):
+    conexion = conectar()
+    fila = conexion.execute(
+        "SELECT codigo FROM instrucciones WHERE id = ?", (id,)).fetchone()
+    if fila is None:
+        conexion.close()
+        abort(404)
+    conexion.execute("DELETE FROM historial_versiones WHERE instruccion_id = ?", (id,))
+    conexion.execute("DELETE FROM instrucciones WHERE id = ?", (id,))
+    conexion.commit()
+    conexion.close()
+    flash("Instrucción " + fila["codigo"] + " eliminada.")
+    return redirect(url_for("listar"))
+
+
+@app.route("/resumen")
+def resumen():
+    conexion = conectar()
+    filas = conexion.execute("SELECT * FROM instrucciones ORDER BY codigo").fetchall()
+    conexion.close()
+
+    # Contadores
+    total_vigentes = 0
+    total_desactualizadas = 0
+    total_por_revisar = 0
+    # Listas para mostrar cuáles instrucciones cayeron en cada clasificación
+    vigentes = []
+    desactualizadas = []
+    por_revisar = []
+
+    # Repetición: se recorre cada registro de la base de datos
+    for fila in filas:
+        # Decisión: se compara la versión del documento con la versión vigente
+        if fila["version"] == fila["version_vigente"]:
+            total_vigentes = total_vigentes + 1
+            vigentes.append(fila)
+        elif fila["version"] < fila["version_vigente"]:
+            total_desactualizadas = total_desactualizadas + 1
+            desactualizadas.append(fila)
+        else:
+            # La versión cargada es mayor que la vigente: dato inconsistente
+            total_por_revisar = total_por_revisar + 1
+            por_revisar.append(fila)
+
+    return render_template(
+        "resumen.html",
+        total=len(filas),
+        total_vigentes=total_vigentes,
+        total_desactualizadas=total_desactualizadas,
+        total_por_revisar=total_por_revisar,
+        vigentes=vigentes,
+        desactualizadas=desactualizadas,
+        por_revisar=por_revisar,
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
