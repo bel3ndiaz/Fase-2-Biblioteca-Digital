@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Biblioteca Digital{% endblock %} | Impresos Múltiples</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="encabezado">
+  <div class="marca">Impresos Múltiples <span>Biblioteca Digital de Instrucciones de Trabajo</span></div>
+  <nav>
+    <a href="{{ url_for('listar') }}">Instrucciones</a>
+    <a href="{{ url_for('nuevo') }}">Registrar</a>
+    <a href="{{ url_for('resumen') }}">Resumen</a>
+  </nav>
+</header>
+<main>
+  {% for mensaje in get_flashed_messages() %}
+  <p class="exito">{{ mensaje }}</p>
+  {% endfor %}
+  {% block contenido %}{% endblock %}
+</main>
+</body>
+</html>
