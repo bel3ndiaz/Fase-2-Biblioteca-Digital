@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Resumen{% endblock %}
+{% block contenido %}
+<h1>Resumen de vigencia</h1>
+<p>Total de instrucciones revisadas: <strong id="total">{{ total }}</strong></p>
+
+<div class="tarjetas">
+  <section class="tarjeta vigente">
+    <h2>Vigentes</h2>
+    <p class="numero">{{ total_vigentes }}</p>
+    <ul>{% for f in vigentes %}<li>{{ f.codigo }} · {{ f.titulo }} (v{{ f.version }})</li>{% endfor %}</ul>
+  </section>
+
+  <section class="tarjeta desactualizada">
+    <h2>Desactualizadas</h2>
+    <p class="numero">{{ total_desactualizadas }}</p>
+    <ul>{% for f in desactualizadas %}<li>{{ f.codigo }} · {{ f.titulo }} (v{{ f.version }} de v{{ f.version_vigente }})</li>{% endfor %}</ul>
+  </section>
+
+  <section class="tarjeta por_revisar">
+    <h2>Por revisar</h2>
+    <p class="numero">{{ total_por_revisar }}</p>
+    <ul>{% for f in por_revisar %}<li>{{ f.codigo }} · {{ f.titulo }} (v{{ f.version }} &gt; v{{ f.version_vigente }})</li>{% endfor %}</ul>
+  </section>
+</div>
+{% endblock %}

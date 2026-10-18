@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar instrucción{% endblock %}
+{% block contenido %}
+<h1>Registrar instrucción</h1>
+
+{% if errores %}
+<ul class="error">
+  {% for e in errores %}<li>{{ e }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+<form method="POST" action="{{ url_for('nuevo') }}">
+  <label for="codigo">Código (ej. IM-OFF-003)</label>
+  <input type="text" id="codigo" name="codigo" value="{{ datos.get('codigo', '') }}">
+
+  <label for="titulo">Título de la instrucción</label>
+  <input type="text" id="titulo" name="titulo" value="{{ datos.get('titulo', '') }}">
+
+  <label for="area">Área</label>
+  <select id="area" name="area">
+    {% for a in areas %}
+    <option value="{{ a }}" {% if datos.get('area') == a %}selected{% endif %}>{{ a }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="version">Versión del documento cargado</label>
+  <input type="text" id="version" name="version" value="{{ datos.get('version', '1') }}">
+
+  <label for="version_vigente">Versión vigente (la oficial más reciente)</label>
+  <input type="text" id="version_vigente" name="version_vigente" value="{{ datos.get('version_vigente', '1') }}">
+
+  <label for="enlace_video">Enlace a video (opcional)</label>
+  <input type="text" id="enlace_video" name="enlace_video" value="{{ datos.get('enlace_video', '') }}">
+
+  <button type="submit">Guardar</button>
+  <a class="enlace-boton secundario" href="{{ url_for('listar') }}">Cancelar</a>
+</form>
+{% endblock %}

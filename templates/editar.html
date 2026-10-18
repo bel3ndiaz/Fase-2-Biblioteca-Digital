@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Modificar instrucción{% endblock %}
+{% block contenido %}
+<h1>Modificar instrucción</h1>
+<p class="ficha"><strong>{{ i.codigo }}</strong> · {{ i.titulo }} · {{ i.area }}<br>Última actualización: {{ i.fecha_actualizacion|fecha }}</p>
+
+{% if errores %}
+<ul class="error">
+  {% for e in errores %}<li>{{ e }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+<form method="POST" action="{{ url_for('editar', id=i.id) }}">
+  <label for="version">Versión del documento cargado</label>
+  <input type="text" id="version" name="version" value="{{ datos['version'] }}">
+
+  <label for="version_vigente">Versión vigente (la oficial más reciente)</label>
+  <input type="text" id="version_vigente" name="version_vigente" value="{{ datos['version_vigente'] }}">
+
+  <label for="enlace_video">Enlace a video (opcional)</label>
+  <input type="text" id="enlace_video" name="enlace_video" value="{{ datos['enlace_video'] or '' }}">
+
+  <button type="submit">Guardar cambios</button>
+  <a class="enlace-boton secundario" href="{{ url_for('listar') }}">Cancelar</a>
+</form>
+{% endblock %}

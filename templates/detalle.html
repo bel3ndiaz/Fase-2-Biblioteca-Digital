@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}{{ i.codigo }}{% endblock %}
+{% block contenido %}
+<h1>{{ i.codigo }} · {{ i.titulo }}</h1>
+
+<table class="detalle">
+  <tr><th>Área</th><td>{{ i.area }}</td></tr>
+  <tr><th>Versión cargada</th><td>v{{ i.version }}</td></tr>
+  <tr><th>Versión vigente</th><td>v{{ i.version_vigente }}</td></tr>
+  <tr><th>Estado</th>
+    <td><span class="etiqueta {{ estado }}">{{ estado.replace('_', ' ').capitalize() }}</span></td></tr>
+  <tr><th>Última actualización</th><td>{{ i.fecha_actualizacion|fecha }}</td></tr>
+  <tr><th>Video</th>
+    <td>{% if i.enlace_video %}<a href="{{ i.enlace_video }}">{{ i.enlace_video }}</a>{% else %}Sin enlace{% endif %}</td></tr>
+</table>
+
+<h2>Historial de versiones</h2>
+<table>
+  <thead><tr><th>Versión</th><th>Fecha</th></tr></thead>
+  <tbody>
+  {% for h in historial %}
+    <tr><td>v{{ h.version }}</td><td>{{ h.fecha|fecha }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<p><a class="enlace-boton secundario" href="{{ url_for('listar') }}">Volver al listado</a>
+<a class="enlace-boton" href="{{ url_for('editar', id=i.id) }}">Modificar</a></p>
+{% endblock %}
