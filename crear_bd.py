@@ -27,3 +27,56 @@ INSTRUCCIONES = [
 ]
 
 
+def crear():
+    conexion = sqlite3.connect(RUTA_BD)
+    conexion.execute("PRAGMA foreign_keys = ON")
+
+    conexion.execute("DROP TABLE IF EXISTS historial_versiones")
+    conexion.execute("DROP TABLE IF EXISTS instrucciones")
+
+    conexion.execute("""
+        CREATE TABLE instrucciones (
+            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            codigo              TEXT    NOT NULL UNIQUE,
+            titulo              TEXT    NOT NULL,
+            area                TEXT    NOT NULL,
+            version             INTEGER NOT NULL,
+            version_vigente     INTEGER NOT NULL,
+            enlace_video        TEXT,
+            fecha_actualizacion TEXT    NOT NULL
+        )
+    """)
+    conexion.execute("""
+        CREATE TABLE historial_versiones (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            instruccion_id INTEGER NOT NULL,
+            version        INTEGER NOT NULL,
+            fecha          TEXT    NOT NULL,
+            FOREIGN KEY (instruccion_id) REFERENCES instrucciones(id)
+        )
+    """)
+
+    for codigo, titulo, area, version, vigente, enlace, fecha in INSTRUCCIONES:
+        cursor = conexion.execute(
+            "INSERT INTO instrucciones "
+            "(codigo, titulo, area, version, version_vigente, enlace_video, fecha_actualizacion) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (codigo, titulo, area, version, vigente, enlace, fecha),
+        )
+        nuevo_id = cursor.lastrowid
+        # Historial: una fila por cada versión que ha tenido la instrucción
+        for v in range(1, version + 1):
+            conexion.execute(
+                "INSERT INTO historial_versiones (instruccion_id, version, fecha) "
+                "VALUES (?, ?, ?)",
+                (nuevo_id, v, fecha if v == version else "2026-0%d-01" % min(v, 9)),
+            )
+
+    conexion.commit()
+    conexion.close()
+    print("Base de datos creada en:", RUTA_BD)
+    print("Instrucciones cargadas:", len(INSTRUCCIONES))
+
+
+if _name_ == "_main_":
+    crear()
