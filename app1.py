@@ -10,7 +10,8 @@ from flask import (Flask, render_template, request, redirect, url_for,
                    flash, abort)
 
 app = Flask(__name__)
-app.secret_key = "clave-solo-para-mensajes-flash"
+app.secret
+_key = "clave-solo-para-mensajes-flash"
 
 RUTA_BD = os.environ.get(
     "BIBLIOTECA_DB",
